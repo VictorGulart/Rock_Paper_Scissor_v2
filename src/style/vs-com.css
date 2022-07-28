@@ -1,0 +1,13 @@
+.vs-com{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.vs-com header{
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 1);
+    font-size: 1.8rem;
+}

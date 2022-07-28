@@ -1,0 +1,49 @@
+#score-board{
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid rgba(51, 160, 189, 1); */
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 1rem;
+    padding: 1rem 3rem;
+    margin-bottom: 1rem;
+}
+
+.score{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 0.4rem;
+}
+
+.match-mode{
+
+}
+
+.match-mode .btn{
+    border: 1px solid white;
+    background-color: rgba(255, 255, 255, 0.6);
+    color: rgb(6, 125, 158, 1);
+    cursor: pointer;
+    border-radius: 1rem;
+    padding: 0.1rem 0.5rem;
+}
+
+.match-mode .btn.active{
+    background-color: rgba(255, 255, 255, 1);
+}
+
+
+
+.counter{
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 1);
+}
+
+.vs{
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 1);
+}
+
+.counter-container{
+
+}

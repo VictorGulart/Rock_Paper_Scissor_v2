@@ -1,0 +1,24 @@
+#nav-bar{
+    display: flex;
+    column-gap: 1.5rem;
+}
+
+#nav-bar .game-btn{
+    color: rgba(255, 255, 255, 1);
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#nav-bar .game-btn:hover{
+    background-color: rgba(33, 37, 37, 0.6);
+}
+
+
+#nav-bar .game-btn.active{
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(33, 37, 37, 0.8);
+}

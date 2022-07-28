@@ -1,0 +1,65 @@
+@import url('./reset.css');
+@import url('./page-header.css');
+@import url('./game-container.css');
+
+/* FONTS */
+@font-face {
+    font-family: 'Robot';
+    src: url('./fonts/Poppins/Poppins-Regular.ttf');
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Roboto', Verdana, Geneva, Tahoma, sans-serif;
+    background: rgb(33, 37, 37);
+    background: radial-gradient(circle, rgba(33, 37, 37, 1) 0%, rgba(51, 160, 189, 1) 0%, rgba(33, 37, 37, 1) 100%);
+    background-repeat: no-repeat;
+}
+
+
+
+.modal-result{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    /* display: none; */
+    background-color: rgba(51, 160, 189, 0.3);
+}
+
+#modal-inner{
+    position: relative;
+    width: 300px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgba(51, 160, 189, 1);
+    border-radius: 1rem;
+    border: 2px solid white;
+}
+
+.result-text{
+    color: rgba(255, 255, 255, 1)
+}
+
+.players-choice{
+    display: flex;
+}
+
+.x-close{
+    position: absolute;
+    color: white;
+    top: 5%;
+    right: 5%;
+    cursor: pointer;
+}
+
+.hidden{
+    display: none;
+}

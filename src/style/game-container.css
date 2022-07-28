@@ -1,0 +1,43 @@
+@import url('./score-board.css');
+@import url('./vs-com.css');
+@import url('./vs-p.css');
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.moves {
+    display: flex;
+}
+
+.shake {
+    max-width: 50px;
+    animation-duration: 200ms;
+    animation-iteration-count: 2;
+    /* transition: transform 400ms; */
+}
+
+.shake:hover {
+    cursor: pointer;
+    animation-name: shake;
+    animation-timing-function: ease;
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(0deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(-30deg) translateY(-5px);
+    }
+
+    100% {
+        transform: rotate(0deg) translateY(0px);
+    }
+
+}
+

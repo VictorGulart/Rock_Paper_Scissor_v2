@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rock, Paper, Scissors</title>
+        <link rel="stylesheet" href="./src/style/style.css">
+        <script src="./src/script.js" defer></script>
+    </head>
+    <body>
+        <!-- add player vs player (asd, and jkl keys for the options)  -->
+        <header id="page-header">
+            <nav id="nav-bar">
+                <button class="game-btn">P vs P</button>
+                <button class="game-btn active">P vs P</button>
+            </nav>
+        </header>
+        <section id="game-container">
+            <article id="score-board">
+                <!-- score board -->
+                <div class="score">
+                    <div class="counter-container">
+                        <div class="counter-label" id="p1"></div>
+                        <div class="counter" id="p1-counter">0</div>
+                    </div>
+                    <div class="vs">
+                        <span id="vs-icon">vs</span>
+                    </div>
+                    <div class="counter-container">
+                        <div class="counter-label" id="p2"></div>
+                        <div class="counter" id="p2-counter">0</div>
+                    </div>
+                </div>
+                <!-- Buttons to restart, BO3, BO5 -->
+                <div class="match-mode">
+                    <button class="btn">Restart</button>
+                    <button class="btn active">BO3</button>
+                    <button class="btn">BO5</button>
+                </div>
+            </article>
+            <article class="vs-com hidden">
+                <!-- vs COM  -->
+                <header>
+                    <p>What's your move:</p>
+                </header>
+                <div class="moves">
+                    <figure class="play-container">
+                        <img
+                            id="rock"
+                            class="shake"
+                            src="./src/imgs/rock.png"
+                            alt="paper"
+                            onclick="play(event)"
+                        >
+                    </figure>
+                    <figure class="play-container">
+                        <img
+                            id="paper"
+                            class="shake"
+                            src="./src/imgs/paper.png"
+                            alt="paper"
+                            onclick="play(event)"
+                        >
+                    </figure>
+                    <figure class="move-img-container">
+                        <img
+                            id="scissors"
+                            class="shake"
+                            src="./src/imgs/scissors.png"
+                            alt="paper"
+                            onclick="play(event)"
+                        >
+                    </figure>
+                </div>
+            </article>
+            <article id="vs-p">
+                <!-- P vs P --></article>
+        </section>
+        <div id="battle-popup">
+            <!-- Hidden FIGHT animation PopUp --></div>
+        <div class="modal-result hidden">
+            <div id="modal-inner">
+                <div class="x-close" onclick="closeModal()">X</div>
+                <div id="result-board"></div>
+            </div>
+        </div>
+    </body>
+</html>
