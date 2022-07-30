@@ -1,13 +1,12 @@
 // game mode options -> com and player
 // match mode options -> bo1, bo3, bo5
-let gameMode = "com";
-const PVP = "pvp";
-const COM = "com";
+const PVP_GAME = "pvp";
+const COM_GAME = "com";
 
 let match;
-const BO1 = "bo1";
-const BO3 = "bo3";
-const BO5 = "bo5";
+const BO1_MATCH = "bo1";
+const BO3_MATCH = "bo3";
+const BO5_MATCH = "bo5";
 
 const ROCK = "rock";
 const PAPER = "paper";
@@ -22,6 +21,10 @@ let p1_counter = document.querySelector("#p1-counter");
 let p2_counter = document.querySelector("#p2-counter");
 let modal_result = document.querySelector(".modal-result");
 let result_board = document.querySelector("#result-board");
+let result_log = document.querySelector("#result-log");
+let bo1 = document.querySelector("#bo1");
+let bo3 = document.querySelector("#bo3");
+let bo5 = document.querySelector("#bo5");
 
 // Helper functions
 
@@ -29,35 +32,66 @@ const getRandom = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1));
 };
 
-class Match {
+class Game {
   roundWinner = undefined;
   constructor(gameMode, matchMode, p1, p2) {
     this.matchWinner = "";
     this.running = true;
-    this.gameMode = gameMode;
-    this.matchMode = matchMode;
+    this.modes = {
+      game: gameMode,
+      match: matchMode,
+      currentMatch: bo1,
+    };
     this.p1 = p1;
     this.p2 = p2;
     this.turn = 0; // 0 or 1
-    this.setUpMatchMode();
+    this.setGameMode();
+    this.setMatchMode();
   }
 
-  setUpMatchMode = () => {
-    switch (this.matchMode) {
+  setGameMode = () => {
+    if (this.modes.game === COM_GAME) {
+      this.showComGame();
+      this.hidePVPGame();
+    } else {
+      this.hideComGame();
+      this.showPVPGame();
+    }
+  };
+
+  setMatchMode = () => {
+    this.modes.currentMatch.classList.remove("active");
+    switch (this.modes.match) {
       case "bo1":
         this.target = 1;
         this.roundCounter = 1;
+        bo1.classList.add("active");
+        this.modes.currentMatch = bo1;
         break;
       case "bo3":
         this.target = 2;
         this.roundCounter = 3;
+        bo3.classList.add("active");
+        this.modes.currentMatch = bo3;
         break;
 
       case "bo5":
         this.target = 3;
         this.roundCounter = 5;
+        bo5.classList.add("active");
+        this.modes.currentMatch = bo5;
         break;
     }
+  };
+
+  changeMatchMode = (event, newMode) => {
+    // Pass new mode
+    this.modes = {
+      ...this.modes,
+      match: newMode,
+    };
+    this.setMatchMode();
+    this.resetMatch();
   };
 
   decCounter = () => {
@@ -120,16 +154,98 @@ class Match {
      */
     this.p1.newGameReset();
     this.p2.newGameReset();
-    this.setUpMatchMode();
     this.matchWinner = undefined;
     this.roundWinner = undefined;
     this.running = true;
+    this.resetResultLog();
+    this.updateUI();
   };
 
   resetRound = () => {
     match.roundWinner = undefined;
     match.p1.resetChoice();
     match.p2.resetChoice();
+  };
+
+  changeGameMode = (e) => {
+    //  Can be - p1 vs p2 -  or  - p1 vs com -
+    // reset the game and change settings
+  };
+
+  showComGame = () => {
+    // set up
+    vsCom.classList.remove("hidden");
+  };
+
+  hideComGame = () => {
+    vsCom.classList.add("hidden");
+  };
+
+  playCOM = (e) => {
+    // Stop the action if game is not running
+    if (!this.running) return;
+
+    // Game Logic
+    this.comGame(e.target.id);
+
+    // UPDATE UI
+    this.updateUI();
+
+    // UPDATE LOGS
+    this.updateLogs();
+  };
+
+  comGame = (playerChoice) => {
+    // do the comGame setup
+
+    // get player choice
+    match.p1.playerPlay(playerChoice);
+
+    // get com choice
+    match.p2.comPlay();
+
+    // Check round and match
+    // match.roundWinner = match.checkRound();
+    match.checkRound();
+    match.checkMatch();
+  };
+
+  // PVP GAME
+  showPVPGame = () => {};
+  hidePVPGame = () => {};
+  playPVP = () => {};
+  pvpGame = () => {};
+
+  updateUI = () => {
+    p1_counter.innerHTML = match.p1.points;
+    p2_counter.innerHTML = match.p2.points;
+  };
+
+  updateLogs = () => {
+    // Update logs
+
+    if (this.matchWinner) {
+      //  if true then it ended and this.winner is set up.
+      //  show on the modal the winner
+      let res = document.createElement("div");
+      res.innerHTML = `\nMatch winner is: ${this.matchWinner}`;
+      result_log.appendChild(res);
+      this.running = false;
+      return;
+    } else if (this.roundWinner !== "tie") {
+      // record round winner
+      let res = document.createElement("div");
+      res.innerHTML = `\nRound winner is ${this.roundWinner.username}`;
+      result_log.appendChild(res);
+    } else if (this.roundWinner === "tie") {
+      let res = document.createElement("div");
+      res.innerHTML = "\nIt was a tie. Go Again!";
+      result_log.appendChild(res);
+    }
+  };
+
+  resetResultLog = () => {
+    result_log.innerHTML = "";
   };
 }
 
@@ -166,79 +282,6 @@ class Player {
   }
 }
 
-const comGameSetUp = () => {
-  // set up
-  vsCom.classList.remove("hidden");
-};
-
-const changeGameMode = (e) => {
-  //  Can be - p1 vs p2 -  or  - p1 vs com -
-  // reset the game and change settings
-};
-
-const changeMatchMode = (e) => {
-  //  Can be - single round, best of 3 or 5
-  // reset the current game
-};
-
-const comGame = (playerChoice) => {
-  // get player choice
-  match.p1.playerPlay(playerChoice);
-
-  // get com choice
-  match.p2.comPlay();
-
-  // Check round and match
-  // match.roundWinner = match.checkRound();
-  match.checkRound();
-  match.checkMatch();
-
-  // check if there's a winner
-  if (match.matchWinner) {
-    //  if true then it ended and this.winner is set up.
-    //  show on the modal the winner
-    console.log("Match winner is ->", match.matchWinner);
-    match.running = false;
-    return;
-  } else if (match.roundWinner !== "tie") {
-    // record round winner
-    console.log("Round winner is ->", match.roundWinner.username);
-  } else if (match.roundWinner === "tie") {
-    console.log("It was a tie. Go Again!");
-  }
-
-  // reset players choices
-  match.resetRound();
-};
-
-const updateUI = () => {
-  p1_counter.innerHTML = match.p1.points;
-  p2_counter.innerHTML = match.p2.points;
-};
-
-const play = (e) => {
-  // check whos turn is it and game-mode
-
-  if (match.gameMode === COM) {
-    comGame(e.target.id);
-  }
-
-  // UPDATE UI
-  // update rounds
-  updateUI();
-
-  if (match.running && match.roundWinner === TIE) {
-    result_board.innerHTML = `It's a tie. Go again!`;
-    modal_result.classList.remove("hidden");
-  }
-  if (!match.running) {
-    // SHOW THE
-    result_board.innerHTML = `The winner is ${match.matchWinner}`;
-    modal_result.classList.remove("hidden");
-    console.log("END OF MATCH");
-  }
-};
-
 const closeModal = () => {
   document.querySelector(".modal-result").classList.add("hidden");
 
@@ -248,10 +291,5 @@ const closeModal = () => {
   }
 };
 
-// RUN
-
-(function run() {
-  // SetUp Default
-  match = new Match("com", "bo3", new Player("P1"), new Player("COM"));
-  comGameSetUp();
-})();
+// SetUp Default
+match = new Game("com", "bo3", new Player("P1"), new Player("COM"));

@@ -13,7 +13,7 @@
         <header id="page-header">
             <nav id="nav-bar">
                 <button class="game-btn">P vs P</button>
-                <button class="game-btn active">P vs P</button>
+                <button class="game-btn active">P vs COM</button>
             </nav>
         </header>
         <section id="game-container">
@@ -34,9 +34,10 @@
                 </div>
                 <!-- Buttons to restart, BO3, BO5 -->
                 <div class="match-mode">
-                    <button class="btn">Restart</button>
-                    <button class="btn active">BO3</button>
-                    <button class="btn">BO5</button>
+                    <button  class="btn" onclick="match.resetMatch()">Restart</button>
+                    <button id="bo1" class="btn" onclick="match.changeMatchMode(event, 'bo1')">Single</button>
+                    <button id="bo3" class="btn active" onclick="match.changeMatchMode(event, 'bo3')">BO3</button>
+                    <button id="bo5" class="btn" onclick="match.changeMatchMode(event, 'bo5')">BO5</button>
                 </div>
             </article>
             <article class="vs-com hidden">
@@ -51,7 +52,7 @@
                             class="shake"
                             src="./src/imgs/rock.png"
                             alt="paper"
-                            onclick="play(event)"
+                            onclick="match.playCOM(event)"
                         >
                     </figure>
                     <figure class="play-container">
@@ -60,7 +61,7 @@
                             class="shake"
                             src="./src/imgs/paper.png"
                             alt="paper"
-                            onclick="play(event)"
+                            onclick="match.playCOM(event)"
                         >
                     </figure>
                     <figure class="move-img-container">
@@ -69,13 +70,17 @@
                             class="shake"
                             src="./src/imgs/scissors.png"
                             alt="paper"
-                            onclick="play(event)"
+                            onclick="match.playCOM(event)"
                         >
                     </figure>
                 </div>
             </article>
             <article id="vs-p">
                 <!-- P vs P --></article>
+            <article class="match-log">
+                <h4>Round Winner</h4>
+                <div id="result-log"></div>
+            </article>
         </section>
         <div id="battle-popup">
             <!-- Hidden FIGHT animation PopUp --></div>
