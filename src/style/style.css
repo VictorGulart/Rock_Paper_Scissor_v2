@@ -1,6 +1,7 @@
 @import url('./reset.css');
 @import url('./page-header.css');
 @import url('./game-container.css');
+@import url('./info-modal.css');
 
 /* FONTS */
 @font-face {
@@ -11,6 +12,7 @@
 body {
     display: flex;
     flex-direction: column;
+    position: relative;
     min-height: 100vh;
     font-family: 'Roboto', Verdana, Geneva, Tahoma, sans-serif;
     background: rgb(33, 37, 37);
@@ -18,28 +20,7 @@ body {
     background-repeat: no-repeat;
 }
 
-.modal-result{
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(51, 160, 189, 0.3);
-}
 
-#modal-inner{
-    position: relative;
-    width: 300px;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    background-color: rgba(51, 160, 189, 1);
-    border-radius: 1rem;
-    border: 2px solid white;
-}
 
 .result-text{
     color: rgba(255, 255, 255, 1)
@@ -54,14 +35,23 @@ body {
     text-align: center;
 }
 
-.x-close{
-    position: absolute;
-    color: white;
-    top: 5%;
-    right: 5%;
-    cursor: pointer;
-}
+
 
 .hidden{
     display: none;
 }
+
+#result-log{
+    border: 1px solid white;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: rgba(33, 37, 37, 1);
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    transition: all ease-in 400ms;
+}
+
+.hide-down{
+    transform: translateY(1rem);
+    opacity: 0;
+}
+

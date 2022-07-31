@@ -1,3 +1,10 @@
+/**
+ * NOTES
+ *
+ * fix - hide the result_log when resetting the game
+ *
+ */
+
 // game mode options -> com and player
 // match mode options -> bo1, bo3, bo5
 const PVP_GAME = "pvp";
@@ -15,25 +22,33 @@ const SCISSORS = "scissors";
 const TIE = "tie";
 
 // DOM Objects
-let vsCom = document.querySelector(".vs-com");
-let vsPlayer = document.querySelector("#vs-p");
+let game_field = document.querySelector(".game-field");
+let call_action_text = document.querySelector("#call-text");
 let p1_counter = document.querySelector("#p1-counter");
 let p2_counter = document.querySelector("#p2-counter");
-let modal_result = document.querySelector(".modal-result");
+let modal_info = document.querySelector(".modal-info");
 let result_board = document.querySelector("#result-board");
 let result_log = document.querySelector("#result-log");
 let bo1 = document.querySelector("#bo1");
 let bo3 = document.querySelector("#bo3");
 let bo5 = document.querySelector("#bo5");
 
-// Helper functions
+// DOM Game Mode
+let pvpModeDOM = document.querySelector("#pvp");
+let comModeDOM = document.querySelector("#com");
 
+// DOM ROCK PAPER SCISSORS
+let rockDOM = document.querySelector("#rock");
+let paperDOM = document.querySelector("#paper");
+let scissorsDOM = document.querySelector("#scissors");
+
+// Helper functions
 const getRandom = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1));
 };
 
 class Game {
-  roundWinner = undefined;
+  roundWinner = "";
   constructor(gameMode, matchMode, p1, p2) {
     this.matchWinner = "";
     this.running = true;
@@ -47,16 +62,39 @@ class Game {
     this.turn = 0; // 0 or 1
     this.setGameMode();
     this.setMatchMode();
+    this.log_timeout;
   }
 
   setGameMode = () => {
     if (this.modes.game === COM_GAME) {
-      this.showComGame();
-      this.hidePVPGame();
+      this.setCOMMode();
+      comModeDOM.onclick = "";
+      comModeDOM.classList.add("active");
+      pvpModeDOM.onclick = () => this.changeGameMode("pvp");
+      pvpModeDOM.classList.remove("active");
+      this.p2.username = "COM";
     } else {
-      this.hideComGame();
-      this.showPVPGame();
+      this.setPvPMode();
+      pvpModeDOM.onclick = "";
+      pvpModeDOM.classList.add("active");
+      comModeDOM.onclick = () => this.changeGameMode("com");
+      comModeDOM.classList.remove("active");
+      this.p2.username = "P2";
     }
+  };
+
+  setCOMMode = () => {
+    // Change onclick listeners
+    rockDOM.onclick = () => this.playCOM("rock");
+    paperDOM.onclick = () => this.playCOM("paper");
+    scissorsDOM.onclick = () => this.playCOM("scissors");
+  };
+
+  setPvPMode = () => {
+    // Change onclick listeners
+    rockDOM.onclick = () => this.playPVP("rock");
+    paperDOM.onclick = () => this.playPVP("paper");
+    scissorsDOM.onclick = () => this.playPVP("scissors");
   };
 
   setMatchMode = () => {
@@ -84,7 +122,18 @@ class Game {
     }
   };
 
-  changeMatchMode = (event, newMode) => {
+  changeGameMode = (mode) => {
+    console.log(mode);
+    if (mode === COM_GAME) this.modes.game = mode;
+    else if (mode === PVP_GAME) this.modes.game = mode;
+    else console.log("this mode does not exist");
+
+    this.setGameMode();
+    this.setMatchMode();
+    this.resetMatch();
+  };
+
+  changeMatchMode = (newMode) => {
     // Pass new mode
     this.modes = {
       ...this.modes,
@@ -104,7 +153,7 @@ class Game {
      * Check if there's a winner
      * return true or false
      */
-    console.log(this.roundCounter, this.target);
+    // console.log(this.roundCounter, this.target);
 
     if (this.p1.points === this.target) {
       this.matchWinner = `${this.p1.username}`;
@@ -152,73 +201,112 @@ class Game {
     /**
      * Resetting the match
      */
-    this.p1.newGameReset();
-    this.p2.newGameReset();
-    this.matchWinner = undefined;
-    this.roundWinner = undefined;
+    this.p1.newMatch();
+    this.p2.newMatch();
+    this.matchWinner = "";
+    this.roundWinner = "";
     this.running = true;
+    this.turn = 0;
     this.resetResultLog();
     this.updateUI();
   };
 
   resetRound = () => {
-    match.roundWinner = undefined;
+    match.roundWinner = "";
     match.p1.resetChoice();
     match.p2.resetChoice();
   };
 
-  changeGameMode = (e) => {
-    //  Can be - p1 vs p2 -  or  - p1 vs com -
-    // reset the game and change settings
-  };
-
-  showComGame = () => {
-    // set up
-    vsCom.classList.remove("hidden");
-  };
-
-  hideComGame = () => {
-    vsCom.classList.add("hidden");
-  };
-
-  playCOM = (e) => {
+  // COM GAME
+  playCOM = (choice) => {
+    /**
+     * Receives the click from the user
+     */
     // Stop the action if game is not running
     if (!this.running) return;
 
     // Game Logic
-    this.comGame(e.target.id);
+    this.comGame(choice);
 
     // UPDATE UI
     this.updateUI();
 
     // UPDATE LOGS
     this.updateLogs();
+
+    this.resetRound();
   };
 
   comGame = (playerChoice) => {
-    // do the comGame setup
+    /**
+     * This represents a round of a match against the machine
+     */
 
     // get player choice
-    match.p1.playerPlay(playerChoice);
+    this.p1.playerPlay(playerChoice);
 
     // get com choice
-    match.p2.comPlay();
+    this.p2.comPlay();
 
     // Check round and match
     // match.roundWinner = match.checkRound();
-    match.checkRound();
-    match.checkMatch();
+    this.checkRound();
+    this.checkMatch();
   };
 
   // PVP GAME
-  showPVPGame = () => {};
-  hidePVPGame = () => {};
-  playPVP = () => {};
-  pvpGame = () => {};
+  playPVP = (choice) => {
+    // Stop the action if game is not running
+    if (!this.running) return;
+
+    // Game Logic
+    this.pvpGame(choice);
+
+    // UPDATE UI
+    this.updateUI();
+
+    if (this.roundWinner !== "" || this.matchWinner !== "") {
+      // only update after both have choosen something
+      // UPDATE LOGS
+      this.updateLogs();
+      this.resetRound();
+    }
+  };
+
+  pvpGame = (choice) => {
+    console.log(this.roundCounter, this.turn, this.p1.choice, this.p2.choice);
+    // check whos turn is
+    if (this.p1.choice === "") {
+      console.log("p1 choice is ", choice);
+      this.p1.choice = choice;
+      this.turn = 1;
+      return;
+    } else {
+      console.log("p2 choice is ", choice);
+      this.p2.choice = choice;
+      this.turn = 0;
+    }
+
+    if (this.p1.choice !== "" && this.p2.choice) {
+      // both players have a choice
+      // Check Rounds and Match
+      this.checkRound();
+      this.checkMatch();
+    }
+  };
 
   updateUI = () => {
-    p1_counter.innerHTML = match.p1.points;
-    p2_counter.innerHTML = match.p2.points;
+    p1_counter.innerHTML = this.p1.points;
+    p2_counter.innerHTML = this.p2.points;
+
+    if (this.modes.game === PVP_GAME && this.turn === 0) {
+      // check turn and update info text
+      call_action_text.innerHTML = "What's you move P1";
+    } else if (this.modes.game === PVP_GAME && this.turn === 1) {
+      call_action_text.innerHTML = "What's you move P2";
+    } else {
+      call_action_text.innerHTML = "What's you move P1?";
+    }
   };
 
   updateLogs = () => {
@@ -229,23 +317,44 @@ class Game {
       //  show on the modal the winner
       let res = document.createElement("div");
       res.innerHTML = `\nMatch winner is: ${this.matchWinner}`;
+      result_log.innerHTML = "";
       result_log.appendChild(res);
       this.running = false;
+
+      window.clearTimeout(this.log_timeout);
+      result_log.classList.remove("hide-down");
+
       return;
     } else if (this.roundWinner !== "tie") {
       // record round winner
       let res = document.createElement("div");
       res.innerHTML = `\nRound winner is ${this.roundWinner.username}`;
+      result_log.innerHTML = "";
       result_log.appendChild(res);
     } else if (this.roundWinner === "tie") {
       let res = document.createElement("div");
+      result_log.innerHTML = "";
       res.innerHTML = "\nIt was a tie. Go Again!";
       result_log.appendChild(res);
     }
+
+    if (!result_log.classList.contains("hide-down")) {
+      // if it is still visible then reset the timeout
+      window.clearTimeout(this.log_timeout);
+    } else {
+      result_log.classList.remove("hide-down");
+    }
+
+    this.log_timeout = setTimeout(() => {
+      result_log.classList.add("hide-down");
+    }, 3000);
   };
 
   resetResultLog = () => {
-    result_log.innerHTML = "";
+    result_log.classList.add("hide-down");
+    setTimeout(() => {
+      result_log.innerHTML = "";
+    }, 500);
   };
 }
 
@@ -276,19 +385,46 @@ class Player {
     this.choice = "";
   }
 
-  newGameReset() {
+  newMatch() {
     this.points = 0;
     this.choice = "";
   }
 }
 
-const closeModal = () => {
-  document.querySelector(".modal-result").classList.add("hidden");
+document.addEventListener("keydown", (e) => {
+  // Handle keydowns
+  let game = match.modes.game === PVP_GAME ? match.playPVP : match.playCOM;
 
-  if (!match.running) {
-    match.resetMatch();
-    updateUI();
+  switch (e.key) {
+    case "a":
+      game("rock");
+      break;
+    case "s":
+      game("paper");
+      break;
+    case "d":
+      game("scissors");
+      break;
+
+    case "j":
+      match.modes.game === PVP_GAME ? game("rock") : null;
+    case "k":
+      match.modes.game === PVP_GAME ? game("paper") : null;
+      break;
+    case "l":
+      match.modes.game === PVP_GAME ? game("scissors") : null;
+      break;
+    case "r":
+      match.resetMatch();
   }
+});
+
+const closeModal = () => {
+  modal_info.classList.add("hidden");
+};
+
+const showModal = () => {
+  modal_info.classList.remove("hidden");
 };
 
 // SetUp Default

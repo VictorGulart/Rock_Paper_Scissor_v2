@@ -9,11 +9,12 @@
         <script src="./src/script.js" defer></script>
     </head>
     <body>
+        <div class="info-btn" onclick="showModal()">!</div>
         <!-- add player vs player (asd, and jkl keys for the options)  -->
         <header id="page-header">
             <nav id="nav-bar">
-                <button class="game-btn">P vs P</button>
-                <button class="game-btn active">P vs COM</button>
+                <button id="pvp" class="game-btn" onclick="match.changeGameMode('pvp')">P vs P</button>
+                <button id="com" class="game-btn active" onclick="match.changeGameMode('com')">P vs COM</button>
             </nav>
         </header>
         <section id="game-container">
@@ -34,16 +35,15 @@
                 </div>
                 <!-- Buttons to restart, BO3, BO5 -->
                 <div class="match-mode">
-                    <button  class="btn" onclick="match.resetMatch()">Restart</button>
-                    <button id="bo1" class="btn" onclick="match.changeMatchMode(event, 'bo1')">Single</button>
-                    <button id="bo3" class="btn active" onclick="match.changeMatchMode(event, 'bo3')">BO3</button>
-                    <button id="bo5" class="btn" onclick="match.changeMatchMode(event, 'bo5')">BO5</button>
+                    <button class="btn" onclick="match.resetMatch()">Restart</button>
+                    <button id="bo1" class="btn" onclick="match.changeMatchMode('bo1')">Single</button>
+                    <button id="bo3" class="btn active" onclick="match.changeMatchMode('bo3')">BO3</button>
+                    <button id="bo5" class="btn" onclick="match.changeMatchMode('bo5')">BO5</button>
                 </div>
             </article>
-            <article class="vs-com hidden">
-                <!-- vs COM  -->
+            <article class="game-field">
                 <header>
-                    <p>What's your move:</p>
+                    <p id="call-text">What's your move P1?</p>
                 </header>
                 <div class="moves">
                     <figure class="play-container">
@@ -52,7 +52,7 @@
                             class="shake"
                             src="./src/imgs/rock.png"
                             alt="paper"
-                            onclick="match.playCOM(event)"
+                            onclick="match.playCOM('rock')"
                         >
                     </figure>
                     <figure class="play-container">
@@ -61,7 +61,7 @@
                             class="shake"
                             src="./src/imgs/paper.png"
                             alt="paper"
-                            onclick="match.playCOM(event)"
+                            onclick="match.playCOM('paper')"
                         >
                     </figure>
                     <figure class="move-img-container">
@@ -70,25 +70,26 @@
                             class="shake"
                             src="./src/imgs/scissors.png"
                             alt="paper"
-                            onclick="match.playCOM(event)"
+                            onclick="match.playCOM('scissors')"
                         >
                     </figure>
                 </div>
             </article>
-            <article id="vs-p">
-                <!-- P vs P --></article>
-            <article class="match-log">
-                <h4>Round Winner</h4>
-                <div id="result-log"></div>
-            </article>
-        </section>
-        <div id="battle-popup">
-            <!-- Hidden FIGHT animation PopUp --></div>
-        <div class="modal-result hidden">
-            <div id="modal-inner">
-                <div class="x-close" onclick="closeModal()">X</div>
-                <div id="result-board"></div>
+        </article>
+        <!-- Match Winner and Round Winner -->
+        <article class="match-log">
+            <div id="result-log" class="hide-down">P1 Wins!</div>
+        </article>
+    </section>
+    <div class="modal-info">
+        <div id="modal-inner">
+            <p>Keyboard</p>
+            <div class="info">
+                <p>Player 1 can use keys: A,S,D</p>
+                <p>Player 2 can use keys: J,K,L</p>
             </div>
+            <div class="x-close" onclick="closeModal()">X</div>
         </div>
-    </body>
+    </div>
+</body>
 </html>

@@ -1,6 +1,5 @@
 @import url('./score-board.css');
-@import url('./vs-com.css');
-@import url('./vs-p.css');
+@import url('./game-field.css');
 
 #game-container {
     display: flex;
@@ -17,7 +16,6 @@
     max-width: 50px;
     animation-duration: 200ms;
     animation-iteration-count: 2;
-    /* transition: transform 400ms; */
 }
 
 .shake:hover {

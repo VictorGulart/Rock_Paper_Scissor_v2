@@ -1,11 +1,11 @@
-.vs-com{
+.game-field{
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 1rem 0;
 }
 
-.vs-com header{
+.game-field header{
     display: flex;
     align-items: center;
     color: rgba(255, 255, 255, 1);
